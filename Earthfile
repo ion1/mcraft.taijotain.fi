@@ -1,0 +1,131 @@
+VERSION 0.6
+
+IMPORT ./download-files AS dl
+
+ARG MINECRAFT_VERSION=1.19.2
+# modrinth:MubyTbnA https://modrinth.com/plugin/freedomchat
+# modrinth:UO7aDcrF https://modrinth.com/plugin/modmapcompanion
+# spiget:28140 https://www.spigotmc.org/resources/luckperms.28140/
+# spiget:57242 https://www.spigotmc.org/resources/spark.57242/
+# spiget:59773 https://www.spigotmc.org/resources/chestsort-api.59773/
+ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:28140 spiget:57242 spiget:59773"
+
+paper:
+  FROM +jre
+  ENV PATH="/minecraft-root/bin:$PATH"
+  ENV MEMORY=""
+
+  COPY +paper-root/minecraft-root/ /minecraft-root/
+
+  USER minecraft
+
+  RUN \
+    set -eu; \
+    mkdir data server server/cache; \
+    ( \
+      cd server/cache; \
+      for f in ../../../minecraft-root/server/cache/*; do \
+        ln -sv "$f" .; \
+      done; \
+    ); \
+    ( \
+      cd server; \
+      for f in \
+        banned-ips.json banned-players.json help.yml ops.json permissions.yml \
+        version_history.json whitelist.json; \
+      do \
+        ln -sv ../data/"$f" .; \
+      done \
+    )
+  WORKDIR server
+
+  VOLUME /minecraft/data
+  EXPOSE 25565 25565/udp
+  ENTRYPOINT ["start-server"]
+  HEALTHCHECK --start-period=1m CMD health-check
+
+  SAVE IMAGE papermc-taijotain:local
+
+paper-root:
+  FROM +jre
+  COPY +log4jscanner/log4jscanner /
+
+  # These files will be copied to /minecraft-root as root in +paper.
+  USER minecraft
+
+  COPY \
+    (dl+download-files/paper/ \
+      --MINECRAFT_VERSION="$MINECRAFT_VERSION" \
+      --PLUGINS="$PLUGINS") \
+    paper/
+
+  # Run log4jscanner once before running paper.jar which downloads mojang...jar
+  RUN /log4jscanner --verbose --rewrite /minecraft
+
+  # Download the Minecraft jar. The libraries and versions directories will be
+  # recreated in runtime based on the cached jar.
+  RUN \
+    (cd paper && ln -s paper-*.jar paper.jar) && \
+    mkdir server && \
+    cd server && \
+    java -jar ../paper/paper.jar -v && \
+    rm -fr libraries versions
+
+  COPY \
+    ( \
+      dl+download-files/plugins/ \
+        --MINECRAFT_VERSION="$MINECRAFT_VERSION" \
+        --PLUGINS="$PLUGINS" \
+    ) \
+    plugins/
+
+  # Run log4jscanner again after the rest of the files have been added.
+  RUN /log4jscanner --verbose --rewrite /minecraft
+
+  # Plugins want to write their config to the the plugin directory. Deal with it.
+  RUN \
+    set -eu; \
+    for d in ChestSort LuckPerms; do \
+      ln -s ../../minecraft/data/plugins/"$d" plugins/"$d"; \
+    done
+
+  COPY +itzg/mc-server-runner bin/
+  COPY +itzg/mc-monitor bin/
+  COPY +itzg/rcon-cli bin/
+
+  COPY files/start-server bin/
+  COPY files/health-check bin/
+  COPY files/rcon bin/
+  COPY files/log4j2.xml ./
+
+  SAVE ARTIFACT /minecraft /minecraft-root
+
+jre:
+  FROM eclipse-temurin:19-jre-alpine
+  WORKDIR /minecraft
+  RUN \
+    addgroup -g 25565 -S minecraft && \
+    adduser -u 25565 -h /minecraft -G minecraft -S minecraft && \
+    chown -R minecraft:minecraft /minecraft
+
+itzg:
+  FROM itzg/minecraft-server:latest
+  SAVE ARTIFACT /usr/local/bin/mc-server-runner
+  SAVE ARTIFACT /usr/local/bin/mc-monitor
+  SAVE ARTIFACT /usr/local/bin/rcon-cli
+
+log4jscanner:
+  FROM dl+alpine
+  RUN apk add --no-cache curl jq
+  USER minecraft
+  RUN \
+    set -eu; \
+    url=; \
+    cmd=$( \
+      curl -s https://api.github.com/repos/google/log4jscanner/releases/latest | \
+      jq -r '.assets[] | select(.name | endswith("-linux-amd64.tar.gz")) | "url=\(.browser_download_url | @sh)"' \
+    ); \
+    printf '%s\n' "$cmd"; \
+    eval "$cmd"; \
+    curl -L "$url" | tar zxv
+  SAVE ARTIFACT log4jscanner/log4jscanner

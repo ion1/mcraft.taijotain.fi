@@ -1,0 +1,57 @@
+VERSION 0.6
+
+IMPORT ../generate-metalink
+
+download-files:
+  FROM node:18-alpine
+  ARG --required MINECRAFT_VERSION
+  ARG PLUGINS=""
+  USER node
+  WORKDIR /home/node/app
+
+  COPY generate-metalink+build/generate-metalink generate-metalink
+  RUN --no-cache \
+    >paper-dl \
+      ./generate-metalink --format=base64 paper "$MINECRAFT_VERSION" && \
+    >plugin-dl-list \
+      ./generate-metalink --format=base64 plugins "$MINECRAFT_VERSION" "$PLUGINS"
+
+  ARG paper_dl=$(cat paper-dl)
+  ARG plugin_dls=$(cat plugin-dl-list)
+
+  BUILD +download-file --DL="$paper_dl"
+  FOR dl IN $plugin_dls
+    BUILD +download-file --DL="$dl"
+  END
+  COPY (+download-file/* --DL="$paper_dl") paper/
+  FOR dl IN $plugin_dls
+    COPY (+download-file/* --DL="$dl") plugins/
+  END
+
+  SAVE ARTIFACT paper
+  SAVE ARTIFACT plugins
+
+download-file:
+  FROM +aria2
+  ARG --required DL
+
+  USER minecraft
+  RUN \
+    printf '%s\n' "$DL" | base64 -d | tee dl.meta4 && \
+    printf '\n' && \
+    mkdir dl && \
+    cd dl && \
+    aria2c --check-integrity=true ../dl.meta4
+  SAVE ARTIFACT dl/*
+
+aria2:
+  FROM +alpine
+  RUN apk add --no-cache aria2
+
+alpine:
+  FROM alpine:latest
+  WORKDIR /minecraft
+  RUN \
+    addgroup -g 25565 -S minecraft && \
+    adduser -u 25565 -h /minecraft -G minecraft -S minecraft && \
+    chown -R minecraft:minecraft /minecraft

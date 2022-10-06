@@ -1,0 +1,21 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "airbnb-base",
+    "airbnb-typescript/base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:eslint-comments/recommended",
+    "plugin:promise/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "@typescript-eslint/lines-between-class-members": 0,
+    // allow for...of, https://github.com/airbnb/javascript/issues/1271#issuecomment-548688952
+    "no-restricted-syntax": 0
+  },
+  "parserOptions": {
+    "project": ["tsconfig.json"]
+  }
+}

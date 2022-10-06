@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eu
+
+mkdir -pv ../data/plugins
+# Plugins want to write their config to the the plugin directory. Deal with it.
+for d in ChestSort LuckPerms; do
+  mkdir -pv ../data/plugins/"$d"
+done
+
+if [ -z "$MEMORY" ]; then
+  MEMORY="2G"
+fi
+
+# Cargo culting https://docs.papermc.io/paper/aikars-flags
+exec \
+  mc-server-runner --stop-server-announce-delay 30s --stop-duration 1m \
+  java \
+  -Xms"$MEMORY" -Xmx"$MEMORY" \
+  -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true \
+  -Dlog4j.formatMsgNoLookups=true \
+  -Dlog4j.configurationFile=../../minecraft-root/log4j2.xml \
+  -Dcom.mojang.eula.agree=true \
+  -Dluckperms.storage-method=yaml \
+  -jar ../../minecraft-root/paper/paper.jar \
+  --nogui --nojline \
+  --plugins ../../minecraft-root/plugins \
+  --world-dir ../data \
+  --commands-settings ../data/commands.yml \
+  --spigot-settings ../data/spigot.yml \
+  --bukkit-settings ../data/bukkit.yml \
+  --config ../data/server.properties \
+  --paper-settings /deprecated/paper.yml \
+  --paper-settings-directory ../data/config

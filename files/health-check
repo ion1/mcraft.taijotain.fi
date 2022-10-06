@@ -1,0 +1,3 @@
+#!/bin/sh
+set -eu
+exec mc-monitor status --host 127.0.0.1

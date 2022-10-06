@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+config=/minecraft/data/server.properties
+
+export RCON_PORT="$(sed -nre 's/^rcon\.port=//p' "$config")"
+export RCON_PASSWORD="$(sed -nre 's/^rcon\.password=//p' "$config")"
+
+exec rcon-cli "$@"

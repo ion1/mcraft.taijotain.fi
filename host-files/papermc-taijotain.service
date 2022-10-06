@@ -1,0 +1,23 @@
+[Unit]
+Description=PaperMC Server (taijotain)
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=300
+TimeoutStopSec=180
+Restart=always
+ExecStartPre=-/usr/bin/docker stop -t 90 %N
+ExecStartPre=-/usr/bin/docker rm %N
+ExecStart=/usr/bin/docker run --rm \
+    --name %N \
+    -p 25565:25565 -p 25565:25565/udp \
+    --memory 7300m --memory-swap 7300m -e MEMORY=6500m \
+    -v /srv/%N:/minecraft/data:z \
+    %N:local
+ExecStartPost=/bin/sh -eu -c 'until test "$$(/usr/bin/docker inspect -f '{{.State.Health.Status}}' %N)" = healthy; do sleep 5; done'
+ExecStop=/usr/bin/docker stop -t 90 %N
+ExecStop=/usr/bin/docker rm %N
+
+[Install]
+WantedBy=default.target
