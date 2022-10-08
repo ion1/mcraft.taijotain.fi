@@ -15,6 +15,31 @@ paper:
   ENV PATH="/minecraft-root/bin:$PATH"
   ENV MEMORY=""
 
+  # Copy in multiple layers to reduce update deltas. Roughly ordered according
+  # to an estimate of the frequency of change and/or descending size.
+
+  # 46 MB, changes very rarely
+  COPY +paper-root/minecraft-root/server/ /minecraft-root/server/
+
+  # 9 MB, changes rarely
+  COPY +paper-root/minecraft-root/bin/mc-monitor /minecraft-root/bin/
+  # 5 MB, changes rarely
+  COPY +paper-root/minecraft-root/bin/rcon-cli /minecraft-root/bin/
+  # 3 MB, changes rarely
+  COPY +paper-root/minecraft-root/bin/mc-server-runner /minecraft-root/bin/
+
+  # 4 MB, changes rarely
+  COPY +paper-root/minecraft-root/plugins/spark*.jar /minecraft-root/plugins/
+
+  # 38 MB, changes frequently
+  COPY +paper-root/minecraft-root/paper/ /minecraft-root/paper/
+
+  # < 1 MB, changes every now and then
+  COPY +paper-root/minecraft-root/plugins/ChestSort*.jar /minecraft-root/plugins/
+  # 2 MB, changes somewhat frequently
+  COPY +paper-root/minecraft-root/plugins/LuckPerms*.jar /minecraft-root/plugins/
+
+  # Remaining tiny mods, small scripts and symlinks, < 1 MB
   COPY +paper-root/minecraft-root/ /minecraft-root/
 
   USER minecraft
