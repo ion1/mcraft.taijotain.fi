@@ -27,6 +27,16 @@ export async function spigetDownload(
   }
 
   const url = await resource.getDownloadUrl();
+
+  // XXX: Workaround for https://github.com/VeguiDev/spiget-api/issues/1
+  if (!url && resource.external) {
+    const resourceCoerced = resource as { file?: { externalUrl?: string } };
+    const extUrl = resourceCoerced.file?.externalUrl;
+    if (extUrl != null) {
+      return new Download({ url: new URL(extUrl) });
+    }
+  }
+
   if (!url)
     throw new Error(`Failed to get URL for ${resource.name} (${resource.id})`);
 
