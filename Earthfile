@@ -5,11 +5,12 @@ IMPORT ./download-files AS dl
 ARG MINECRAFT_VERSION=1.19.2
 # modrinth:MubyTbnA https://modrinth.com/plugin/freedomchat
 # modrinth:UO7aDcrF https://modrinth.com/plugin/modmapcompanion
+# spiget:274 https://www.spigotmc.org/resources/dynmap%C2%AE.274/
 # spiget:18494 https://www.spigotmc.org/resources/discordsrv.18494/
 # spiget:28140 https://www.spigotmc.org/resources/luckperms.28140/
 # spiget:57242 https://www.spigotmc.org/resources/spark.57242/
 # spiget:59773 https://www.spigotmc.org/resources/chestsort-api.59773/
-ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:18494 spiget:28140 spiget:57242 spiget:59773"
+ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:274 spiget:18494 spiget:28140 spiget:57242 spiget:59773"
 
 paper:
   FROM +jre
@@ -41,6 +42,8 @@ paper:
   COPY +paper-root/minecraft-root/plugins/ChestSort*.jar /minecraft-root/plugins/
   # 2 MB, changes somewhat frequently
   COPY +paper-root/minecraft-root/plugins/LuckPerms*.jar /minecraft-root/plugins/
+  # 10 MB, changes somewhat frequently
+  COPY +paper-root/minecraft-root/plugins/Dynmap*.jar /minecraft-root/plugins/
 
   # Remaining tiny mods, small scripts and symlinks, < 1 MB
   COPY +paper-root/minecraft-root/ /minecraft-root/
@@ -68,7 +71,7 @@ paper:
   WORKDIR server
 
   VOLUME /minecraft/data
-  EXPOSE 25565 25565/udp
+  EXPOSE 25565 25565/udp 8123
   ENTRYPOINT ["start-server"]
   HEALTHCHECK --start-period=1m CMD health-check
 
@@ -113,7 +116,7 @@ paper-root:
   # Plugins want to write their config to the the plugin directory. Deal with it.
   RUN \
     set -eu; \
-    for d in ChestSort DiscordSRV LuckPerms; do \
+    for d in ChestSort DiscordSRV dynmap LuckPerms; do \
       ln -s ../../minecraft/data/plugins/"$d" plugins/"$d"; \
     done
 
