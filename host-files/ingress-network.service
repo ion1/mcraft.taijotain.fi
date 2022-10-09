@@ -1,0 +1,12 @@
+[Unit]
+Description=Docker network for an ingress server
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=-/usr/bin/docker network rm ingress-network
+ExecStart=/usr/bin/docker network create \
+  --driver=bridge --subnet=172.25.0.0/16 ingress-network
+ExecStop=/usr/bin/docker network rm ingress-network

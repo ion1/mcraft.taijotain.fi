@@ -1,7 +1,7 @@
 [Unit]
 Description=PaperMC Server (taijotain)
-After=docker.service
-Requires=docker.service
+After=ingress-network.service
+Requires=ingress-network.service
 
 [Service]
 TimeoutStartSec=300
@@ -11,6 +11,7 @@ ExecStartPre=-/usr/bin/docker stop -t 90 %N
 ExecStartPre=-/usr/bin/docker rm %N
 ExecStart=/usr/bin/docker run --rm \
     --name %N \
+    --network ingress-network \
     -p 25565:25565 -p 25565:25565/udp \
     --memory 7300m --memory-swap 7300m -e MEMORY=6500m \
     -v /srv/%N:/minecraft/data:z \

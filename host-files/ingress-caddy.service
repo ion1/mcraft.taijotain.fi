@@ -1,0 +1,25 @@
+[Unit]
+Description=Caddy ingress proxy
+After=ingress-network.service
+Requires=ingress-network.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker stop %N
+ExecStartPre=-/usr/bin/docker rm %N
+ExecStart=/usr/bin/docker run --rm \
+    --name %N \
+    --network ingress-network \
+    -p 80:80 -p 443:443 -p 443:443/udp \
+    --memory 100m --memory-swap 100m \
+    -v /srv/%N/data:/data:z \
+    -v /srv/%N/config:/config:z \
+    %N:local \
+    caddy reverse-proxy \
+      --from mcraft.taijotain.fi \
+      --to http://papermc-taijotain:8123
+ExecStop=/usr/bin/docker stop %N
+ExecStop=/usr/bin/docker rm %N
+
+[Install]
+WantedBy=default.target
