@@ -7,9 +7,7 @@ for d in ChestSort DiscordSRV LuckPerms; do
   mkdir -pv ../data/plugins/"$d"
 done
 
-if [ -z "$MEMORY" ]; then
-  MEMORY="2G"
-fi
+export MEMORY="${MEMORY:-2G}"
 
 # Cargo culting https://docs.papermc.io/paper/aikars-flags
 exec \
