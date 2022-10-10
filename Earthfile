@@ -6,11 +6,12 @@ ARG MINECRAFT_VERSION=1.19.2
 # modrinth:MubyTbnA https://modrinth.com/plugin/freedomchat
 # modrinth:UO7aDcrF https://modrinth.com/plugin/modmapcompanion
 # spiget:274 https://www.spigotmc.org/resources/dynmap%C2%AE.274/
+# spiget:6245 https://www.spigotmc.org/resources/placeholderapi.6245/
 # spiget:18494 https://www.spigotmc.org/resources/discordsrv.18494/
 # spiget:28140 https://www.spigotmc.org/resources/luckperms.28140/
 # spiget:57242 https://www.spigotmc.org/resources/spark.57242/
 # spiget:59773 https://www.spigotmc.org/resources/chestsort-api.59773/
-ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:274 spiget:18494 spiget:28140 spiget:57242 spiget:59773"
+ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:274 spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773"
 
 paper:
   FROM +jre
@@ -34,6 +35,8 @@ paper:
   COPY +paper-root/minecraft-root/plugins/DiscordSRV*.jar /minecraft-root/plugins/
   # 4 MB, changes rarely
   COPY +paper-root/minecraft-root/plugins/spark*.jar /minecraft-root/plugins/
+  # 1 MB, changes rarely
+  COPY +paper-root/minecraft-root/plugins/PlaceholderAPI*.jar /minecraft-root/plugins/
 
   # 38 MB, changes frequently
   COPY +paper-root/minecraft-root/paper/ /minecraft-root/paper/
@@ -116,7 +119,7 @@ paper-root:
   # Plugins want to write their config to the the plugin directory. Deal with it.
   RUN \
     set -eu; \
-    for d in ChestSort DiscordSRV dynmap LuckPerms; do \
+    for d in ChestSort DiscordSRV dynmap LuckPerms PlaceholderAPI; do \
       ln -s ../../minecraft/data/plugins/"$d" plugins/"$d"; \
     done
 
