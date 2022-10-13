@@ -3,7 +3,7 @@ set -eu
 
 mkdir -pv ../data/plugins
 # Plugins want to write their config to the the plugin directory. Deal with it.
-for d in ChestSort DiscordSRV dynmap LuckPerms PlaceholderAPI; do
+for d in BlueMap ChestSort DiscordSRV LuckPerms PlaceholderAPI; do
   mkdir -pv ../data/plugins/"$d"
 done
 
