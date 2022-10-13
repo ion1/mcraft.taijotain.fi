@@ -32,6 +32,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@octokit/rest": "^19.0.4",
     "cmd-ts": "^0.11.0",
     "modrinth": "^1.3.2",
     "papermc-api": "^1.1.5-1",

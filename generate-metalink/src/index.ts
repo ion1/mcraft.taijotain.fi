@@ -10,6 +10,7 @@ import {
 } from "cmd-ts";
 
 import { paperDownload } from "./sources/paper";
+import { githubDownload } from "./sources/github";
 import { modrinthDownload } from "./sources/modrinth";
 import { spigetDownload } from "./sources/spiget";
 import { Format, validateFormat } from "./types/download";
@@ -56,7 +57,7 @@ const pluginsCmd = command({
     }),
     pluginIDs: positional({
       type: string,
-      displayName: "[modrinth:ID ...] [spiget:ID ...]",
+      displayName: "[github:owner/repo ...] [modrinth:ID ...] [spiget:ID ...]",
       description: "Plugin IDs",
     }),
   },
@@ -66,6 +67,8 @@ const pluginsCmd = command({
       if (provider == null || id == null)
         throw new Error(`Invalid plugin ID: ${pluginID}`);
       switch (provider) {
+        case "github":
+          return githubDownload(minecraftVersion, id);
         case "modrinth":
           return modrinthDownload(minecraftVersion, id);
         case "spiget": {
