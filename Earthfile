@@ -12,10 +12,13 @@ ARG MINECRAFT_VERSION=1.19.2
 # spiget:59773 https://www.spigotmc.org/resources/chestsort-api.59773/
 # spiget:83557 https://www.spigotmc.org/resources/bluemap.83557/
 ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557"
+ARG PLUGIN_CONFIG_DIRS="BlueMap ChestSort DiscordSRV LuckPerms PlaceholderAPI"
 
 paper:
   FROM +jre
   ENV PATH="/minecraft-root/bin:$PATH"
+  # Used by start-server
+  ENV PLUGIN_CONFIG_DIRS="$PLUGIN_CONFIG_DIRS"
   ENV MEMORY=""
 
   # Copy in multiple layers to reduce update deltas. Roughly ordered according
@@ -119,7 +122,7 @@ paper-root:
   # Plugins want to write their config to the the plugin directory. Deal with it.
   RUN \
     set -eu; \
-    for d in BlueMap ChestSort DiscordSRV LuckPerms PlaceholderAPI; do \
+    for d in $PLUGIN_CONFIG_DIRS; do \
       ln -s ../../minecraft/data/plugins/"$d" plugins/"$d"; \
     done
 
