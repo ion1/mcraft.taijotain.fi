@@ -13,7 +13,7 @@ ExecStart=/usr/bin/docker run --rm \
     --name %N \
     --network ingress-network \
     -p 25565:25565 -p 25565:25565/udp \
-    --memory 7300m --memory-swap 7300m -e MEMORY=6500m \
+    --memory 7300m --memory-swap 7300m -e MEMORY=6000m \
     -v /srv/%N:/minecraft/data:z \
     %N:local
 ExecStartPost=/bin/sh -eu -c 'until test "$$(/usr/bin/docker inspect -f '{{.State.Health.Status}}' %N)" = healthy; do sleep 5; done'
