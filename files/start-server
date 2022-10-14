@@ -21,6 +21,7 @@ exec \
   -Dluckperms.storage-method=yaml \
   -jar ../../minecraft-root/paper/paper.jar \
   --nogui --nojline \
+  --log-strip-color \
   --plugins ../../minecraft-root/plugins \
   --world-dir ../data \
   --commands-settings ../data/commands.yml \
