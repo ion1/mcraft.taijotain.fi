@@ -12,7 +12,7 @@ ARG MINECRAFT_VERSION=1.19.2
 # spiget:59773 https://www.spigotmc.org/resources/chestsort-api.59773/
 # spiget:83557 https://www.spigotmc.org/resources/bluemap.83557/
 ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557"
-ARG PLUGIN_CONFIG_DIRS="BlueMap ChestSort DiscordSRV LuckPerms PlaceholderAPI"
+ARG PLUGIN_CONFIG_DIRS="BlueMap ChestSort DiscordSRV FreedomChat LuckPerms PlaceholderAPI"
 
 paper:
   FROM +jre
