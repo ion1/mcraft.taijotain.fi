@@ -8,9 +8,7 @@ export async function paperDownload(
   const paper = await PaperAPI.project("paper");
   if (!paper) throw new Error(`PaperAPI.project("paper") failed`);
   const version = await paper.getVersion(minecraftVersion);
-  // const build = await version.getBuild("latest");
-  // https://github.com/PaperMC/Paper/issues/8503
-  const build = await version.getBuild("232");
+  const build = await version.getBuild("latest");
   const url = build.getDownloadUrl();
   const sha256sum = build.downloads["application"]?.sha256;
   if (!sha256sum) throw new Error(`Failed to find checksum for Paper`);
