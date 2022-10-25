@@ -11,8 +11,9 @@ ARG MINECRAFT_VERSION=1.19.2
 # spiget:57242 https://www.spigotmc.org/resources/spark.57242/
 # spiget:59773 https://www.spigotmc.org/resources/chestsort-api.59773/
 # spiget:83557 https://www.spigotmc.org/resources/bluemap.83557/
-ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557"
-ARG PLUGIN_CONFIG_DIRS="BlueMap ChestSort DiscordSRV FreedomChat LuckPerms PlaceholderAPI"
+# github:TechnicJelle/BlueMapOfflinePlayerMarkers https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers
+ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557 github:TechnicJelle/BlueMapOfflinePlayerMarkers"
+ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort DiscordSRV FreedomChat LuckPerms PlaceholderAPI"
 
 paper:
   FROM +jre
