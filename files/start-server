@@ -7,6 +7,9 @@ for d in $PLUGIN_CONFIG_DIRS; do
   mkdir -pv ../data/plugins/"$d"
 done
 
+# Have BlueMap recreate the web app in case it has been updated.
+rm -fv ../data/bluemap/web/index.html
+
 export MEMORY="${MEMORY:-2G}"
 
 # Cargo culting https://docs.papermc.io/paper/aikars-flags
