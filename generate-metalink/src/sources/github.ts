@@ -1,5 +1,4 @@
 import { Octokit } from "@octokit/rest";
-import { removeAllListeners } from "process";
 
 import { Download } from "../types/download";
 
