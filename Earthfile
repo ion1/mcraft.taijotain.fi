@@ -2,7 +2,7 @@ VERSION 0.6
 
 IMPORT ./download-files AS dl
 
-ARG MINECRAFT_VERSION=1.19.2
+ARG MINECRAFT_VERSION=1.19.3
 # modrinth:MubyTbnA https://modrinth.com/plugin/freedomchat
 # modrinth:UO7aDcrF https://modrinth.com/plugin/modmapcompanion
 # spiget:6245 https://www.spigotmc.org/resources/placeholderapi.6245/
