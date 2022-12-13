@@ -10,6 +10,10 @@ done
 # Have BlueMap recreate the web app in case it has been updated.
 rm -fv ../data/bluemap/web/index.html
 
+# The motdgg plugin expects to find these files here.
+ln -fsv ../data/server.properties .
+ln -fsv ../data/server-icon.png .
+
 export MEMORY="${MEMORY:-2G}"
 
 # Cargo culting https://docs.papermc.io/paper/aikars-flags
