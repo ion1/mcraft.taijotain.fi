@@ -10,25 +10,33 @@ download-files:
   WORKDIR /home/node/app
 
   COPY generate-metalink+build/generate-metalink generate-metalink
+  # https://forums.papermc.io/threads/malware-announcement.529/
   RUN --no-cache \
     >paper-dl \
       ./generate-metalink --format=base64 paper "$MINECRAFT_VERSION" && \
+    >mc-anti-malware-dl \
+      ./generate-metalink --format=base64 plugins "$MINECRAFT_VERSION" \
+        "github:OpticFusion1/MCAntiMalware" && \
     >plugin-dl-list \
       ./generate-metalink --format=base64 plugins "$MINECRAFT_VERSION" "$PLUGINS"
 
   ARG paper_dl=$(cat paper-dl)
+  ARG mc_anti_malware_dl=$(cat mc-anti-malware-dl)
   ARG plugin_dls=$(cat plugin-dl-list)
 
   BUILD +download-file --DL="$paper_dl"
+  BUILD +download-file --DL="$mc_anti_malware_dl"
   FOR dl IN $plugin_dls
     BUILD +download-file --DL="$dl"
   END
   COPY (+download-file/* --DL="$paper_dl") paper/
+  COPY (+download-file/* --DL="$mc_anti_malware_dl") mc-anti-malware/
   FOR dl IN $plugin_dls
     COPY (+download-file/* --DL="$dl") plugins/
   END
 
   SAVE ARTIFACT paper
+  SAVE ARTIFACT mc-anti-malware
   SAVE ARTIFACT plugins
 
 download-file:

@@ -45,6 +45,9 @@ paper:
   # 38 MB, changes frequently
   COPY +paper-root/minecraft-root/paper/ /minecraft-root/paper/
 
+  # 30 MB, changes somewhat frequently
+  COPY +paper-root/minecraft-root/mc-anti-malware/ /minecraft-root/mc-anti-malware/
+
   # < 1 MB, changes every now and then
   COPY +paper-root/minecraft-root/plugins/ChestSort*.jar /minecraft-root/plugins/
   # 5 MB, changes every now and then
@@ -111,6 +114,14 @@ paper-root:
 
   COPY \
     ( \
+      dl+download-files/mc-anti-malware/ \
+        --MINECRAFT_VERSION="$MINECRAFT_VERSION" \
+        --PLUGINS="$PLUGINS" \
+    ) \
+    mc-anti-malware/
+
+  COPY \
+    ( \
       dl+download-files/plugins/ \
         --MINECRAFT_VERSION="$MINECRAFT_VERSION" \
         --PLUGINS="$PLUGINS" \
@@ -119,6 +130,13 @@ paper-root:
 
   # Run log4jscanner again after the rest of the files have been added.
   RUN /log4jscanner --verbose --rewrite /minecraft
+
+  # Run MCAntiMalware in single scan mode.
+  RUN \
+    java -jar mc-anti-malware/MCAntiMalware.jar \
+      --printNotInfectedMessages true --scanDirectory plugins --singleScan true && \
+    ! grep -F '[DETECTED]' AntiMalware/logs/latest.log && \
+    rm -fr AntiMalware
 
   # Plugins want to write their config to the the plugin directory. Deal with it.
   RUN \
