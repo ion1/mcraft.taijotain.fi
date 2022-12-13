@@ -14,7 +14,7 @@ ARG MINECRAFT_VERSION=1.19.3
 # spiget:83557 https://www.spigotmc.org/resources/bluemap.83557/
 # github:TechnicJelle/BlueMapOfflinePlayerMarkers https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers
 ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF modrinth:VPo0otUH spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557 github:TechnicJelle/BlueMapOfflinePlayerMarkers"
-ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort DiscordSRV FreedomChat LuckPerms PlaceholderAPI"
+ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort DiscordSRV FreedomChat LuckPerms PlaceholderAPI spark"
 
 paper:
   FROM +jre
