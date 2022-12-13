@@ -12,26 +12,6 @@ rm -fv ../data/bluemap/web/index.html
 
 export MEMORY="${MEMORY:-2G}"
 
-# Join the server args with commas to pass as a MCAntiMalware parameter.
-server_args=
-for arg in \
-  --nogui --nojline \
-  --log-strip-color \
-  --plugins ../../minecraft-root/plugins \
-  --world-dir ../data \
-  --commands-settings ../data/commands.yml \
-  --spigot-settings ../data/spigot.yml \
-  --bukkit-settings ../data/bukkit.yml \
-  --config ../data/server.properties \
-  --paper-settings /deprecated/paper.yml \
-  --paper-settings-directory ../data/config
-do
-  server_args="${server_args:+$server_args,}$arg"
-done
-
-# TODO: MCAntiMalware expects this to exist
-mkdir -pv plugins
-
 # Cargo culting https://docs.papermc.io/paper/aikars-flags
 exec \
   mc-server-runner --stop-server-announce-delay 30s --stop-duration 1m \
@@ -42,7 +22,14 @@ exec \
   -Dlog4j.configurationFile=../../minecraft-root/log4j2.xml \
   -Dcom.mojang.eula.agree=true \
   -Dluckperms.storage-method=yaml \
-  -jar ../../minecraft-root/mc-anti-malware/MCAntiMalware.jar \
-  --printNotInfectedMessages true --scanDirectory ../../minecraft-root/plugins \
-  --serverJar ../../minecraft-root/paper/paper.jar \
-  --serverArguments "$server_args"
+  -jar ../../minecraft-root/paper/paper.jar \
+  --nogui --nojline \
+  --log-strip-color \
+  --plugins ../../minecraft-root/plugins \
+  --world-dir ../data \
+  --commands-settings ../data/commands.yml \
+  --spigot-settings ../data/spigot.yml \
+  --bukkit-settings ../data/bukkit.yml \
+  --config ../data/server.properties \
+  --paper-settings /deprecated/paper.yml \
+  --paper-settings-directory ../data/config
