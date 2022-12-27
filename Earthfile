@@ -3,6 +3,7 @@ VERSION 0.6
 IMPORT ./download-files AS dl
 
 ARG MINECRAFT_VERSION=1.19.3
+# modrinth:Lu3KuzdV https://modrinth.com/plugin/coreprotect
 # modrinth:MubyTbnA https://modrinth.com/plugin/freedomchat
 # modrinth:UO7aDcrF https://modrinth.com/plugin/modmapcompanion
 # modrinth:VPo0otUH https://modrinth.com/plugin/motdgg
@@ -12,9 +13,10 @@ ARG MINECRAFT_VERSION=1.19.3
 # spiget:57242 https://www.spigotmc.org/resources/spark.57242/
 # spiget:59773 https://www.spigotmc.org/resources/chestsort-api.59773/
 # spiget:83557 https://www.spigotmc.org/resources/bluemap.83557/
+# github:Jikoo/OpenInv https://github.com/jikoo/OpenInv
 # github:TechnicJelle/BlueMapOfflinePlayerMarkers https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers
-ARG PLUGINS="modrinth:MubyTbnA modrinth:UO7aDcrF modrinth:VPo0otUH spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557 github:TechnicJelle/BlueMapOfflinePlayerMarkers"
-ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort DiscordSRV FreedomChat LuckPerms PlaceholderAPI spark"
+ARG PLUGINS="modrinth:Lu3KuzdV modrinth:MubyTbnA modrinth:UO7aDcrF modrinth:VPo0otUH spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557 github:Jikoo/OpenInv github:TechnicJelle/BlueMapOfflinePlayerMarkers"
+ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort CoreProtect DiscordSRV FreedomChat LuckPerms OpenInv PlaceholderAPI spark"
 
 paper:
   FROM +jre
@@ -137,6 +139,7 @@ paper-root:
     java -jar mc-anti-malware/MCAntiMalware.jar \
       --printNotInfectedMessages true --scanDirectory plugins --singleScan true && \
     sed -i -r \
+      -e '/\[DETECTED\]: plugins\/CoreProtect-[^ ]+\.jar MIGHT be infected with Spigot.MALWARE.McMonetary.A Class Path: net\/coreprotect\/listener\/entity\/EntityDeathListener ; SourceFile\/Line EntityDeathListener.java\/-?1|[0-9]+$/d' \
       -e '/\[DETECTED\]: plugins\/DiscordSRV-Build-[^ ]+\.jar MIGHT be infected with Spigot.MALWARE.SystemAccess.Exec Class Path: (github\/scarsz\/discordsrv\/dependencies\/minidns\/dnsserverlookup\/AndroidUsingExec)? ; SourceFile\/Line AndroidUsingExec.java\/34/d' \
       AntiMalware/logs/latest.log && \
     ! grep -F '[DETECTED]' AntiMalware/logs/latest.log && \
