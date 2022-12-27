@@ -12,7 +12,9 @@ export async function modrinthDownload(
   const candidates = versions.filter(
     (ver) =>
       (ver.type === "release" || ver.type === "beta") &&
-      (ver.game_versions as string[]).includes(minecraftVersion) &&
+      ((ver.game_versions as string[]).includes(minecraftVersion) ||
+        // TODO: workaround for MapModCompanion
+        (ver.game_versions as string[]).includes("1.19.2")) &&
       (ver.loaders as string[]).includes("paper")
   );
   if (candidates.length === 0) {
