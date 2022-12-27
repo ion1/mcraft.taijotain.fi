@@ -132,10 +132,13 @@ paper-root:
   # Run log4jscanner again after the rest of the files have been added.
   RUN /log4jscanner --verbose --rewrite /minecraft
 
-  # Run MCAntiMalware in single scan mode.
+  # Run MCAntiMalware in single scan mode. Ignore false positives.
   RUN \
     java -jar mc-anti-malware/MCAntiMalware.jar \
       --printNotInfectedMessages true --scanDirectory plugins --singleScan true && \
+    sed -i -r \
+      -e '/\[DETECTED\]: plugins\/DiscordSRV-Build-[^ ]+\.jar MIGHT be infected with Spigot.MALWARE.SystemAccess.Exec Class Path: (github\/scarsz\/discordsrv\/dependencies\/minidns\/dnsserverlookup\/AndroidUsingExec)? ; SourceFile\/Line AndroidUsingExec.java\/34/d' \
+      AntiMalware/logs/latest.log && \
     ! grep -F '[DETECTED]' AntiMalware/logs/latest.log && \
     rm -fr AntiMalware
 
