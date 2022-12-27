@@ -3,6 +3,7 @@ VERSION 0.6
 IMPORT ./download-files AS dl
 
 ARG MINECRAFT_VERSION=1.19.3
+# modrinth:gu1LvcZ0 https://modrinth.com/plugin/gravitycontrol
 # modrinth:Lu3KuzdV https://modrinth.com/plugin/coreprotect
 # modrinth:MubyTbnA https://modrinth.com/plugin/freedomchat
 # modrinth:UO7aDcrF https://modrinth.com/plugin/modmapcompanion
@@ -15,8 +16,8 @@ ARG MINECRAFT_VERSION=1.19.3
 # spiget:83557 https://www.spigotmc.org/resources/bluemap.83557/
 # github:Jikoo/OpenInv https://github.com/jikoo/OpenInv
 # github:TechnicJelle/BlueMapOfflinePlayerMarkers https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers
-ARG PLUGINS="modrinth:Lu3KuzdV modrinth:MubyTbnA modrinth:UO7aDcrF modrinth:VPo0otUH spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557 github:Jikoo/OpenInv github:TechnicJelle/BlueMapOfflinePlayerMarkers"
-ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort CoreProtect DiscordSRV FreedomChat LuckPerms OpenInv PlaceholderAPI spark"
+ARG PLUGINS="modrinth:gu1LvcZ0 modrinth:Lu3KuzdV modrinth:MubyTbnA modrinth:UO7aDcrF modrinth:VPo0otUH spiget:6245 spiget:18494 spiget:28140 spiget:57242 spiget:59773 spiget:83557 github:Jikoo/OpenInv github:TechnicJelle/BlueMapOfflinePlayerMarkers"
+ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort CoreProtect DiscordSRV FreedomChat GravityControl LuckPerms OpenInv PlaceholderAPI spark"
 
 paper:
   FROM +jre
