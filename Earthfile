@@ -17,7 +17,7 @@ ARG MINECRAFT_VERSION=1.19.3
 # github:Jikoo/OpenInv https://github.com/jikoo/OpenInv
 # github:TechnicJelle/BlueMapOfflinePlayerMarkers https://github.com/TechnicJelle/BlueMapOfflinePlayerMarkers
 ARG PLUGINS="modrinth:gu1LvcZ0 modrinth:Lu3KuzdV modrinth:MubyTbnA modrinth:UmLGoGij modrinth:UO7aDcrF modrinth:VPo0otUH spiget:6245 spiget:28140 spiget:57242 spiget:59773 spiget:83557 github:Jikoo/OpenInv github:TechnicJelle/BlueMapOfflinePlayerMarkers"
-ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort CoreProtect DiscordSRV FreedomChat GravityControl LuckPerms OpenInv PlaceholderAPI spark"
+ARG PLUGIN_CONFIG_DIRS="BlueMap BlueMapOfflinePlayerMarkers ChestSort CoreProtect DiscordSRV FreedomChat GravityControl LuckPerms MapModCompanion OpenInv PlaceholderAPI spark"
 
 paper:
   FROM +jre
