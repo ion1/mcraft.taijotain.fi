@@ -3,7 +3,7 @@ import { PaperAPI } from "papermc-api/dist/class/PaperAPI";
 import { Download } from "../types/download";
 
 export async function paperDownload(
-  minecraftVersion: string
+  minecraftVersion: string,
 ): Promise<Download> {
   const paper = await PaperAPI.project("paper");
   if (!paper) throw new Error(`PaperAPI.project("paper") failed`);

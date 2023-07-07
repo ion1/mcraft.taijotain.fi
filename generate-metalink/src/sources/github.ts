@@ -4,7 +4,7 @@ import { Download } from "../types/download";
 
 export async function githubDownload(
   _minecraftVersion: string,
-  id: string
+  id: string,
 ): Promise<Download> {
   // XXX: Ignoring minecraftVersion
 
@@ -23,7 +23,7 @@ export async function githubDownload(
   const asset = assets.data.find((a) => a.name.match(/\.jar$/));
   if (asset == null) {
     throw new Error(
-      `Failed to find a .jar asset for github:${JSON.stringify(id)}`
+      `Failed to find a .jar asset for github:${JSON.stringify(id)}`,
     );
   }
 
