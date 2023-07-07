@@ -1,13 +1,15 @@
-import { getProject, getProjectVersions } from "@xmcl/modrinth";
+import { ModrinthV2Client } from "@xmcl/modrinth";
 
 import { Download } from "../types/download";
+
+const modrinth = new ModrinthV2Client();
 
 export async function modrinthDownload(
   minecraftVersion: string,
   modId: string
 ): Promise<Download> {
-  const mod = await getProject(modId);
-  const versions = await getProjectVersions(modId);
+  const mod = await modrinth.getProject(modId);
+  const versions = await modrinth.getProjectVersions(modId);
   const candidates = versions.filter(
     (ver) =>
       (ver.version_type === "release" || ver.version_type === "beta") &&
