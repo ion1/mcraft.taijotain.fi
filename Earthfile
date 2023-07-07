@@ -2,7 +2,7 @@ VERSION 0.6
 
 IMPORT ./download-files AS dl
 
-ARG MINECRAFT_VERSION=1.19.3
+ARG MINECRAFT_VERSION=1.20.1
 # modrinth:gu1LvcZ0 https://modrinth.com/plugin/gravitycontrol
 # modrinth:Lu3KuzdV https://modrinth.com/plugin/coreprotect
 # modrinth:MubyTbnA https://modrinth.com/plugin/freedomchat
