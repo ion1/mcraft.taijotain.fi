@@ -13,9 +13,7 @@ export async function modrinthDownload(
   const candidates = versions.filter(
     (ver) =>
       (ver.version_type === "release" || ver.version_type === "beta") &&
-      (ver.game_versions.includes(minecraftVersion) ||
-        // TODO: workaround for CoreProtect
-        (modId === "Lu3KuzdV" && ver.game_versions.includes("1.19.4"))) &&
+      ver.game_versions.includes(minecraftVersion) &&
       ver.loaders.includes("paper"),
   );
   if (candidates.length === 0) {
