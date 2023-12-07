@@ -13,7 +13,10 @@ export async function modrinthDownload(
   const candidates = versions.filter(
     (ver) =>
       (ver.version_type === "release" || ver.version_type === "beta") &&
-      ver.game_versions.includes(minecraftVersion) &&
+      (ver.game_versions.includes(minecraftVersion) ||
+        /* Override compatibility for GravityControl, MapModCompanion and motd.gg. */
+        (["gu1LvcZ0", "UO7aDcrF", "VPo0otUH"].includes(modId) &&
+          ver.game_versions.includes("1.20.1"))) &&
       ver.loaders.includes("paper"),
   );
   if (candidates.length === 0) {
