@@ -1,0 +1,29 @@
+[Unit]
+Description=Restic backup of the PaperMC data (taijotain)
+
+[Service]
+Type=oneshot
+TimeoutStopSec=180
+Restart=on-failure
+RestartSec=30
+ExecStartPre=docker run --rm \
+  --hostname mcraft.taijotain.fi \
+  --env-file /path/to/papermc-taijotain-restic-backup.env \
+  -v /srv/restic-cache:/cache:z \
+  -v /srv/papermc-taijotain:/data:z \
+  papermc-taijotain-restic-backup:local \
+  restic unlock
+ExecStart=docker run --rm \
+  --hostname mcraft.taijotain.fi \
+  --env-file /path/to/papermc-taijotain-restic-backup.env \
+  -v /srv/restic-cache:/cache:z \
+  -v /srv/papermc-taijotain:/data:z \
+  papermc-taijotain-restic-backup:local \
+  papermc-taijotain-restic backup --- forget --- prune --- check
+ExecStopPost=docker run --rm \
+  --hostname mcraft.taijotain.fi \
+  --env-file /path/to/papermc-taijotain-restic-backup.env \
+  -v /srv/restic-cache:/cache:z \
+  -v /srv/papermc-taijotain:/data:z \
+  papermc-taijotain-restic-backup:local \
+  restic unlock

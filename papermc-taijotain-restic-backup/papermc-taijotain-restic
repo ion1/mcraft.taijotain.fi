@@ -1,0 +1,118 @@
+#!/bin/sh
+
+MY_NAME="$0"
+
+usage() {
+  printf 'USAGE: %s [SUBCOMMAND] [--- SUBCOMMAND ...]\n' "$MY_NAME"
+  printf '  SUBCOMMAND: backup|forget|prune|check [RESTIC_ARGUMENTS]\n'
+}
+
+backup() {
+  version_history_file="/data/version_history.json"
+
+  version="$(
+    sed -nre 's/^.*"currentVersion":"[^"]*\(MC: ([^")]+)\)[^"]*".*$/\1/p' "$version_history_file"
+  )"
+
+  if ! [ -n "$version" ]; then
+    >&2 printf '%s\n' "ERROR: Failed to parse the version"
+    >&2 printf '%s\n' "$(cat "$version_history_file")"
+    exit 1
+  fi
+
+  >&2 printf 'Minecraft version: %s\n' "$version"
+
+  (
+    set -x
+    restic backup \
+      --verbose \
+      --exclude bluemap \
+      --exclude tmp \
+      --exclude '*.jar' \
+      --tag "$version" \
+      /data \
+      "$@"
+  )
+}
+
+forget() {
+  (
+    set -x
+    restic forget \
+      --verbose \
+      --keep-within-hourly 1d \
+      --keep-within-daily 7d \
+      --keep-within-weekly 1m \
+      --keep-within-monthly 1y \
+      --keep-within-yearly 1000y \
+      "$@"
+  )
+}
+
+prune() {
+  (
+    set -x
+    restic prune --verbose "$@"
+  )
+}
+
+check() {
+  (
+    set -x
+    restic check --verbose "$@"
+  )
+}
+
+cmd() {
+  if [ $# -lt 1 ]; then
+    return
+  fi
+
+  local subcommand="$1"; shift
+
+  case "$subcommand" in
+    backup)
+      backup "$@" ;;
+    forget)
+      forget "$@" ;;
+    prune)
+      prune "$@" ;;
+    check)
+      check "$@" ;;
+    *)
+      >&2 printf 'ERROR: Unknown subcommand %s\n' "$subcommand"
+      >&2 usage
+      exit 1
+      ;;
+  esac
+}
+
+process_args() {
+  local initial=true
+
+  for arg; do
+    if [ -n "$initial" ]; then
+      set --
+      initial=
+    fi
+
+    case "$arg" in
+      ---)
+        cmd "$@"
+        set --
+        ;;
+      *)
+        set -- "$@" "$arg"
+        ;;
+    esac
+  done
+
+  cmd "$@"
+}
+
+if [ $# -lt 1 ]; then
+  usage
+  exit
+fi
+
+process_args "$@"

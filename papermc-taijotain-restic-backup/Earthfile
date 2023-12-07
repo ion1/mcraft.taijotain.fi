@@ -1,0 +1,23 @@
+VERSION 0.7
+
+papermc-taijotain-restic-backup:
+  FROM restic/restic:latest
+
+  ENTRYPOINT []
+
+  COPY --chmod=0755 papermc-taijotain-restic /bin/
+
+  RUN \
+    addgroup -g 25565 -S minecraft && \
+    adduser -u 25565 -h /minecraft -G minecraft -S minecraft
+  USER minecraft
+
+  ENV RESTIC_REPOSITORY
+  ENV RESTIC_PASSWORD
+  ENV RESTIC_CACHE_DIR=/cache
+  ENV RESTIC_COMPRESSION=max
+
+  VOLUME /cache
+  VOLUME /data
+
+  SAVE IMAGE papermc-taijotain-restic-backup:local
