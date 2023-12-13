@@ -7,6 +7,8 @@ Requires=ingress-network.service
 Restart=always
 ExecStartPre=-/usr/bin/docker stop %N
 ExecStartPre=-/usr/bin/docker rm %N
+# https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes
+ExecStartPre=sh -eu -c 'sysctl_min() { if ! [ "$(sysctl -n "$1")" -ge "$2" ]; then sysctl -w "$1=$2"; fi; }; sysctl_min net.core.rmem_max 2500000; sysctl_min net.core.wmem_max 2500000'
 ExecStartPre=sh -eu -c 'con() { if ! [ "$(stat -c %%C "$2")" = "$1" ]; then (set -x; chcon -Rv "$1" "$2"); fi; }; for path; do con system_u:object_r:container_file_t:s0 "$path"; done' -- /srv/%N
 ExecStart=/usr/bin/docker run --rm \
     --name %N \
