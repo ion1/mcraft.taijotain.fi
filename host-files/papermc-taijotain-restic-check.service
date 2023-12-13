@@ -1,5 +1,5 @@
 [Unit]
-Description=Restic backup of the PaperMC data (taijotain)
+Description=Restic check of the PaperMC data (taijotain)
 
 [Service]
 Type=oneshot
@@ -15,4 +15,4 @@ ExecStart=flock --verbose --no-fork /run/lock/papermc-taijotain-restic.lock \
   -v /srv/restic-cache:/cache \
   -v /srv/papermc-taijotain-20221008:/data \
   papermc-taijotain-restic-backup:local \
-  papermc-taijotain-restic backup --- forget --prune
+  papermc-taijotain-restic check --read-data-subset=0.28%%
