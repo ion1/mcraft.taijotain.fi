@@ -9,14 +9,15 @@ TimeoutStopSec=180
 Restart=always
 ExecStartPre=-/usr/bin/docker stop -t 90 %N
 ExecStartPre=-/usr/bin/docker rm %N
+ExecStartPre=sh -eu -c 'con() { if ! [ "$(stat -c %%C "$2")" = "$1" ]; then (set -x; chcon -Rv "$1" "$2"); fi; }; for path; do con system_u:object_r:container_file_t:s0 "$path"; done' -- /srv/papermc-taijotain-20221008
 ExecStart=/usr/bin/docker run --rm \
     --name %N \
     --network ingress-network \
     -p 25565:25565 -p 25565:25565/udp \
     --memory 7300m --memory-swap 7300m -e MEMORY=6000m \
     --ulimit nofile=100000:100000 \
-    -v /srv/%N:/minecraft/data:z \
-    %N:local
+    -v /srv/papermc-taijotain-20221008:/minecraft/data \
+    papermc-taijotain:local
 ExecStartPost=/bin/sh -eu -c 'until test "$$(/usr/bin/docker inspect -f '{{.State.Health.Status}}' %N)" = healthy; do sleep 5; done'
 ExecStop=/usr/bin/docker stop -t 90 %N
 ExecStop=/usr/bin/docker rm %N

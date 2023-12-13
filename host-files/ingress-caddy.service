@@ -7,13 +7,14 @@ Requires=ingress-network.service
 Restart=always
 ExecStartPre=-/usr/bin/docker stop %N
 ExecStartPre=-/usr/bin/docker rm %N
+ExecStartPre=sh -eu -c 'con() { if ! [ "$(stat -c %%C "$2")" = "$1" ]; then (set -x; chcon -Rv "$1" "$2"); fi; }; for path; do con system_u:object_r:container_file_t:s0 "$path"; done' -- /srv/%N
 ExecStart=/usr/bin/docker run --rm \
     --name %N \
     --network ingress-network \
     -p 80:80 -p 443:443 -p 443:443/udp \
     --memory 100m --memory-swap 100m \
-    -v /srv/%N/data:/data:z \
-    -v /srv/%N/config:/config:z \
+    -v /srv/%N/data:/data \
+    -v /srv/%N/config:/config \
     %N:local \
     caddy reverse-proxy \
       --from mcraft.taijotain.fi \
